@@ -8,3 +8,4 @@ from Bio.Seq import Seq
 #import biopython
 seq = Seq("AGCT") 
 st.success("success")
+st.success(seq)
