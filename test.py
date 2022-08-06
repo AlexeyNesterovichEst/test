@@ -7,6 +7,4 @@ from Bio import Entrez, SeqIO, Seq
 #from biopython.Seq import Seq 
 #import biopython
 seq = Seq("AGCT") 
-seq1 = str(seq)
 st.success("success")
-st.success(seq1)
