@@ -6,5 +6,5 @@ import pydna
 import Bio
 from Bio.Seq import Seq 
 #import biopython
-seq = Seq.Seq("AGCT") 
+seq = Seq("AGCT") 
 st.success("success")
