@@ -1,4 +1,4 @@
-biopython
+biopython -- upgrade
 streamlit==1.11.1
 numpy
 requests
