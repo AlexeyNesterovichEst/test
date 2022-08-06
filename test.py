@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import requests
 import pydna
+import Bio
 from Bio import Entrez, SeqIO, Seq
 #from biopython.Seq import Seq 
 #import biopython
