@@ -3,8 +3,9 @@ import streamlit as st
 import numpy as np
 import requests
 import pydna
-from Bio import Entrez, SeqIO
+from Bio import Entrez, SeqIO, Seq
 #from biopython.Seq import Seq 
 #import biopython
-#seq = Seq("AGCT") 
+seq = Seq("AGCT") 
 st.success("success")
+st.succes(seq)
