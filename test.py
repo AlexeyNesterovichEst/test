@@ -4,7 +4,7 @@ import numpy as np
 import requests
 import pydna
 import Bio
-#from biopython.Seq import Seq 
+from Bio.Seq import Seq 
 #import biopython
 seq = Seq.Seq("AGCT") 
 st.success("success")
