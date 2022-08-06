@@ -5,6 +5,7 @@ import requests
 import pydna
 import Bio
 from Bio.Seq import Seq 
+from Bio import Entrez, SeqIO
 #import biopython
 seq = Seq("AGCT") 
 st.success("success")
