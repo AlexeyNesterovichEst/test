@@ -3,7 +3,7 @@ import numpy as np
 import requests
 import pydna
 from Bio import Entrez, SeqIO
-import sys #
+#import sys #
 #import json
 
 #  + Human Deleted in malignant brain tumors 1 sequence
@@ -22,7 +22,7 @@ def get_url(url, **kwargs):
   if not response.ok:
     print(response.text)
     response.raise_for_status()
-    sys.exit()
+    #sys.exit()
 
   return response
 
