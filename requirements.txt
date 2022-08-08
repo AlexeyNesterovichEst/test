@@ -2,3 +2,4 @@ pydna
 streamlit==1.11.1
 numpy
 requests
+sys
