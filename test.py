@@ -83,8 +83,6 @@ def gene_cds(gene,tax):
         p1 += 1
       nd1 = line[dots-p1+1:dots]
       nd2 = line[dots+2:]
-      print(nd1)
-      print(nd2)
   # add else
   handle.close()
   s = recs[0].seq
@@ -129,7 +127,7 @@ def prot_gene_seq(protein,tax_id,tax):
   a_gene = a_entity[1].split(' ')
   gene = a_gene[0]
   s = gene_cds(gene,tax)
-  return s
+  return s,gene
 
 def primers():
     return
@@ -152,6 +150,7 @@ if(st.button('Submit')):
     seq_i = try_except('sequence',data) 
     prim_i = try_except('primers',data) #add primers -> cloning (look pydna)
     for_i = try_except('for',data)
+    tab1, tab2, tab3 = st.tabs(["Result-only", "Step-by-step", "Article"])
     if hum_i != -1:
         tax = data[hum_i]
         if tax == 'human':
@@ -162,30 +161,44 @@ if(st.button('Submit')):
     if seq_i != -1:
         n,d1,d2 = partial(1)
         if data[seq_i-n].isupper() == True:
-            st.success("%s %s sequence" % (tax,data[seq_i-n]))
             gene = data[seq_i-n]
             s = gene_seq(gene,tax)
             if d1 != "" and d2 != "":
                 s = s[int(d1):int(d2)+1] #check if -1 is needed after int(d1)
-            st.code(s)
+            with tab1: 
+                st.code(s)
+            with tab2: 
+                st.success("%s %s sequence" % (tax,data[seq_i-n]))
+                st.code(s)
+            with tab3:
+                st.write("%s %s sequence is %s (NCBI Resource Coordinators ,2016)" % (tax,data[seq_i-n],s))
         elif data[seq_i-n] == "product":
             n,d1,d2 = partial(2)
             st.success('gene_prot_seq')
         elif data[seq_i-1] == "coding":
             n,d1,d2 = partial(2)
             prot = prot_str('coding',3) 
+            prot_s = ' '.join(prot)
             if d1 != "" and d2 != "":
               prot = prot[:-1]
             protein = ' '.join(prot)
             #st.success("%s %s coding sequence" % (tax,protein))
-            s = prot_gene_seq(protein,tax_id,tax)
+            s,gene = prot_gene_seq(protein,tax_id,tax)
             # check gene_cds and dmbt1 aa sequence
             if d1 != "" and d2 != "":
               if d1 == "1":
                  s = s[:(int(d2)*3)]
               else:
                  s = s[((int(d1)-1)*3):(int(d2)*3)]
-            st.code(s)
+            with tab1: 
+                st.code(s)
+            with tab2: 
+                st.success("%s %s coding gene" % (tax,prot_s)) 
+                st.code(gene)
+                st.success("%s coding sequence" % (gene)) 
+                st.code(s)
+            with tab3:
+                st.write("%s %s coding gene is %s with coding sequence %s (UniProt Consortium, 2021; NCBI Resource Coordinators ,2016)." % (tax,prot_s,gene,s))
         elif data[seq_i-1] == "plasmid":
             n,d1,d2 = partial(2)
             st.success('plasmid_seq')
@@ -194,14 +207,19 @@ if(st.button('Submit')):
             prot = prot_str('sequence',2) 
             protein = ' '.join(prot)
             # add tax argument as second %s
-            st.success("%s %s sequence" % (tax,protein))
             s = prot_seq(protein,tax_id)
             # st.success(s)
             ss = s.splitlines()
             sss = ''.join(ss[1:])
             if d1 != "" and d2 != "":
-              ssss = sss[int(d1)-1:int(d2)]
-              st.code(ssss)
+              sss = sss[int(d1)-1:int(d2)]
+            with tab1: 
+                st.code(sss)
+            with tab2: 
+                st.success("%s %s sequence" % (tax,protein))
+                st.code(sss)
+            with tab3:
+                st.write("%s %s sequence is %s (UniProt Consortium, 2021)." % (tax,protein,sss))
     elif prim_i != -1: #synchronise
         n,d1,d2 = partial(1)
         if data[seq_i-n].isupper() == True:
@@ -209,18 +227,24 @@ if(st.button('Submit')):
             s = gene_seq(gene,tax)
             if d1 != "" and d2 != "":
                 s = s[int(d1)-1:int(d2)+1]
-            st.success("%s %s sequence" % (tax,data[seq_i-n]))
-            st.code(s)
-            st.success("%s %s primers" % (tax,data[seq_i-n]))
             # def primers
             dna=Dseqrecord(s)
             ampl = primer_design(dna, target_tm=55.0)
-            if prim_i + 1 == for_i:
-                st.success("for")
-            st.success("forward primer of %s %s" % (tax,data[seq_i-n])) # add temperature
-            st.code(ampl.forward_primer.seq)
-            st.success("reverse primer of %s %s" % (tax,data[seq_i-n])) # add temperature
-            st.code(ampl.reverse_primer.seq)
+            #if prim_i + 1 == for_i:
+                #st.success("for")
+            with tab1:
+                st.code(ampl.forward_primer.seq)
+                st.code(ampl.reverse_primer.seq)
+            with tab2:
+                st.success("%s %s sequence" % (tax,data[seq_i-n]))
+                st.code(s)
+                st.success("forward primer of %s %s" % (tax,data[seq_i-n])) # add temperature
+                st.code(ampl.forward_primer.seq)
+                st.success("reverse primer of %s %s" % (tax,data[seq_i-n])) # add temperature
+                st.code(ampl.reverse_primer.seq)
+            with tab3:
+                st.write("%s %s (NCBI Resource Coordinators, 2016) primers are %s and %s." 
+                         % (tax,data[seq_i-n], ampl.forward_primer.seq, ampl.reverse_primer.seq))
         else:
             prot = prot_str('primers',1) #
             if d1 != "" and d2 != "": #
